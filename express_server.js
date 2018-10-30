@@ -9,7 +9,8 @@ app.set("view engine", "ejs");
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "9sm5xK": "http://www.google.com",
+  "t7UrE4": "http://www.macg.co"
 };
 
 function generateRandomString() {
@@ -51,7 +52,9 @@ app.get("/hello", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
+  //console.log(req.body);  // debug statement to see POST parameters
+  urlDatabase[generateRandomString()] = req.body['longURL'];
+  //console.log(urlDatabase);
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
