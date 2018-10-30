@@ -19,9 +19,12 @@ function generateRandomString() {
   for(let i = 0; i < 6; i++) {
     short += key[Math.floor(Math.random() * key.length)];
   }
+  if (urlDatabase.hasOwnProperty(short)) {
+   generateRandomString();
+  }
   return short;
 }
-console.log(generateRandomString());
+//console.log(generateRandomString());
 
 app.get("/", (req, res) => {
   res.send("Hello!");
