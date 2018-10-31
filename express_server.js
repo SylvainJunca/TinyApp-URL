@@ -122,19 +122,34 @@ app.post('/login', (req, res) => {
   res.redirect('/urls');
 });
 app.post('/register', (req, res) => {
+  let existingEmail = 1;
+  // Condition, if the user enters an email and a password, then we can get the data
   if (req.body.email && req.body.password) {
-  const usrName = generateRandomString();
-  res.cookie('username', usrName);
-  users[usrName] = {
-    id: usrName,
-    email: req.body.email,
-    password: req.body.password
-  };
-  console.log(users);
-  res.redirect('/urls');
-  };
+    //this condition checks if the email entered already exists 
+    for (const each in users) {
+      console.log(users[each]['email']);
+      if (users[each]['email'] === req.body.email) {
+        existingEmail = 0;
+      };
+    };
+    if (existingEmail) {
+      const usrName = generateRandomString();
+      res.cookie('username', usrName);
+      users[usrName] = {
+        id: usrName,
+        email: req.body.email,
+        password: req.body.password
+      };
+    res.redirect('/urls');
+    };
+    if (existingEmail === 0) {
+      res.status(400);
+      res.send('Hey, this email is already registered in our database!')
+    }
+  } else {
   res.status(400);
   res.send('None shall pass without entering all the mandatory information')
+  };
 });
 
 app.listen(PORT, () => {
