@@ -32,22 +32,26 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = { username: req.cookies["username"] }
+  res.render("urls_new", templateVars);
 });
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 app.get("/hello", (req, res) => {
-  let templateVars = { greeting: 'Hello World!' };
+  let templateVars = { greeting: 'Hello World!',
+  username: req.cookies["username"] };
   res.render("hello_world", templateVars);
 });
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { urls: urlDatabase,
+    username: req.cookies["username"] };
   res.render("urls_index", templateVars);
 });
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id,
-    urls: urlDatabase };
+    urls: urlDatabase,
+    username: req.cookies["username"] };
   res.render("urls_show", templateVars);
 });
 
