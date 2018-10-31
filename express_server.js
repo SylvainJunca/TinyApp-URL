@@ -9,6 +9,34 @@ app.use(cookieParser())
 
 app.set("view engine", "ejs");
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  },
+ "user3RandomID": {
+    id: "user3RandomID", 
+    email: "user3@example.com", 
+    password: "yopolo-tamasa"
+  },
+ "user4RandomID": {
+    id: "user4RandomID", 
+    email: "user4@example.com", 
+    password: "arguments-umbrella"
+  },
+ "user5RandomID": {
+    id: "user5RandomID", 
+    email: "user5@example.com", 
+    password: "cat-watersalmon"
+  }
+}
+
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
@@ -90,8 +118,18 @@ app.post("/urls/:id", (req, res) => {
   res.redirect('/urls');
 });
 app.post('/login', (req, res) => {
-  console.log(req.body.username);
   res.cookie('username', req.body.username);
+  res.redirect('/urls');
+});
+app.post('/register', (req, res) => {
+  const usrName = generateRandomString();
+  res.cookie('username', usrName);
+  users[usrName] = {
+    id: usrName,
+    email: req.body.email,
+    password: req.body.password
+  };
+  console.log(users);
   res.redirect('/urls');
 });
 
