@@ -8,13 +8,18 @@
         <% include ./partials/_header %>
     </header>
     
-  
+    <ul>
     <% for (const each in urls){ %>
-      <%= each + ' : ' + urls[each] %>
-      <form method="POST" action='/urls/<%= each %>/delete'>
-        <input type = "submit" value="Delete">
-      </form>
+      <form method="POST" action='/urls/<%= each %>/delete'></form>
+      <li>
+        <%= each + ' : ' + urls[each] %>
+        
+          <input type = "submit" value="Delete">
+        
+      </li>
+    </form>
     <% }; %>
+  </ul>
   
   <a href='urls/new'>Shorten a new URL</a>
 </body>

@@ -59,6 +59,10 @@ app.get("/hello", (req, res) => {
   let templateVars = { greeting: 'Hello World!' };
   res.render("hello_world", templateVars);
 });
+app.get("/register", (req, res) => {
+  let templateVars = { username: req.cookies["username"] };
+  res.render("register", templateVars);
+});
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
