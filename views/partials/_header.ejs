@@ -1,9 +1,12 @@
 <header>
   <h2>The ugliest but coolest URL shortener <3 </h2>
-    <form method='POST' action='login'>
-      <input name='username' placeholder='Username'>
-      <input type= 'submit' value='Sign in'>
-    </form>
-      <%= username %>
+    <% if(username){ %>
+      <h3>Welcome <%= username %> <a href='/logout'>Logout</a></h3>
+    <% } else{ %>  
+      <form method='POST' action='login'>
+          <input name='username' placeholder='Username'>
+          <input type= 'submit' value='Sign in'>
+        </form>
+   <% } %>
      
 </header>

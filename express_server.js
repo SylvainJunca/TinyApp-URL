@@ -63,6 +63,10 @@ app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
+app.get("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.redirect('urls');
+});
 
 app.post("/urls", (req, res) => {
   //console.log(req.body);  // debug statement to see POST parameters
