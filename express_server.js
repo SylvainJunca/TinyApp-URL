@@ -122,6 +122,7 @@ app.post('/login', (req, res) => {
   res.redirect('/urls');
 });
 app.post('/register', (req, res) => {
+  if (req.body.email && req.body.password) {
   const usrName = generateRandomString();
   res.cookie('username', usrName);
   users[usrName] = {
@@ -131,6 +132,9 @@ app.post('/register', (req, res) => {
   };
   console.log(users);
   res.redirect('/urls');
+  };
+  res.status(400);
+  res.send('None shall pass without entering all the mandatory information')
 });
 
 app.listen(PORT, () => {
