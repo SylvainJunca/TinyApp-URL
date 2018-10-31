@@ -3,7 +3,7 @@
     <% if(username){ %>
       <h3>Welcome <%= username %> <a href='/logout'>Logout</a></h3>
     <% } else{ %>  
-      <form method='POST' action='login'>
+      <form method='POST' action='/login'>
           <input name='username' placeholder='Username'>
           <input type= 'submit' value='Sign in'>
         </form>
