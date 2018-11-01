@@ -3,6 +3,9 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser')
+const bcrypt = require('bcrypt');
+const password = "purple-monkey-dinosaur";
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
@@ -170,12 +173,13 @@ app.post("/urls/:id", (req, res) => {
 app.post('/login', (req, res) => {
   let pass;
   let failPassword;
+
   for(const each in users){
-    if (users[each]['email'] === req.body.email && users[each]['password'] === req.body.password) {
+    if (users[each]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[each]['password'])) {
       //console.log(users[each]['email'], req.body.email, 'yes');
       res.cookie('user_id', users[each]['id']);
       pass = 1;
-    } if (users[each]['email'] === req.body.email && users[each]['password'] !== req.body.password) {
+    } if (users[each]['email'] === req.body.email && !bcrypt.compareSync("purple-monkey-dinosaur", req.body.password)) {
       failPassword = 1;
     }; 
   };
@@ -205,14 +209,15 @@ app.post('/register', (req, res) => {
     if (notExistingEmail) {
       const usrName = generateRandomString();
       res.cookie('user_id', usrName);
+      const hashedPassword = bcrypt.hashSync(req.body.password, 10); // Hash the password entered
+      console.log('hashed pwd on register', hashedPassword);
       users[usrName] = {
         id: usrName,
         email: req.body.email,
-        password: req.body.password
+        password: hashedPassword
       };
     res.redirect('/urls');
-    };
-    if (!notExistingEmail) {
+    } else {
       res.status(400);
       res.send('Hey, this email is already registered in our database!');
     }
