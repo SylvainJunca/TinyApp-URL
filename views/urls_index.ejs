@@ -9,16 +9,14 @@
     </header>
     
     <ul>
-    <% for (const each in urls){ %>
+      <% for (const each in urls){ %>
       <form method="POST" action='/urls/<%= each %>/delete'>
       <li>
-        <%= each + ' : ' + urls[each] %>
-        
+        <%= each + ' : ' + urls[each]['url'] %>
           <input type = "submit" value="Delete">
-        
       </li>
     </form>
-    <% }; %>
+    <% }; %> 
   </ul>
   
   <a href='urls/new'>Shorten a new URL</a>

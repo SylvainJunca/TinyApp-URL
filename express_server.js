@@ -39,11 +39,13 @@ const users = {
 
 const urlDatabase = {
   "b2xVn2": { "url": "http://www.lighthouselabs.ca",
-  "userID": "user5RandomID" },
+  "user_ID": "user5RandomID" },
   "9sm5xK": { "url": "http://www.google.com",
-  "userID": "userRandomID" },
+  "user_ID": "userRandomID" },
   "t7UrE4": { "url": "http://www.macg.co",
-  "userID": "user2RandomID" }
+  "user_ID": "user2RandomID" },
+  "b2xfTu": { "url": "http://www.lifeisabeach.fr",
+  "user_ID": "user5RandomID" },
 };
 
 function generateRandomString() {
@@ -61,10 +63,19 @@ function generateRandomString() {
 
 const isLogged = (req) => req.cookies.user_id ;
 const isOwner = (req) => {
-  console.log(req.cookies.user_id, urlDatabase[req.params.id]['userID'] );
-  return (req.cookies.user_id === urlDatabase[req.params.id]['userID'])
+  console.log(req.cookies.user_id, urlDatabase[req.params.id]['user_ID'] );
+  return (req.cookies.user_id === urlDatabase[req.params.id]['user_ID'])
 };
-
+const urlsForUser = (id) => {
+  const userURL = {}
+  for (each in urlDatabase) {
+    if (urlDatabase[each]['user_ID'] === id){
+      userURL[each] = urlDatabase[each];
+    };
+  };
+  console.log(userURL);
+  return userURL;
+}
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -102,20 +113,32 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, 
-    user: users[req.cookies['user_id']]};
-  res.render("urls_index", templateVars);
+  
+  if (isLogged(req)){
+    let templateVars = { urls: urlsForUser(req.cookies.user_id), 
+      user: users[req.cookies['user_id']]};
+    res.render("urls_index", templateVars);
+  } else {
+  res.send('You should login or register');
+  };
 });
 
 app.get("/urls/:id", (req, res) => {
+  if (!isLogged(req)) {
+    res.send('Please login or register');
+  } if (isOwner(req)) {
   let templateVars = { shortURL: req.params.id,
     urls: urlDatabase,
     user: users[req.cookies['user_id']] };
   res.render("urls_show", templateVars);
+  } else {
+    res.send('You cannot have access to this page');
+  }
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
+  //console.log(urlDatabase[req.params.shortURL]['url']);
+  let longURL = urlDatabase[req.params.shortURL]['url'];
   res.redirect(longURL);
 });
 app.get("/logout", (req, res) => {
