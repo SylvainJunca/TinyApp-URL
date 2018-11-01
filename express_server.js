@@ -129,8 +129,28 @@ app.post("/urls/:id", (req, res) => {
   res.redirect('/urls');
 });
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  let pass;
+  let failPassword;
+  for(const each in users){
+    if (users[each]['email'] === req.body.email && users[each]['password'] === req.body.password) {
+      //console.log(users[each]['email'], req.body.email, 'yes');
+      res.cookie('user_id', users[each]['id']);
+      pass = 1;
+    } if (users[each]['email'] === req.body.email && users[each]['password'] !== req.body.password) {
+      failPassword = 1;
+    }; 
+  };
+  if(pass === 1) {
+    res.redirect('/');
+  };
+  if (failPassword === 1) {
+    res.status(403);
+    res.send('None shall pass without entering the correct password!')
+  } if(pass !== 1) {
+    res.status(403);
+    res.send('None shall pass without entering the correct email and password')
+  }
+  
 });
 app.post('/register', (req, res) => {
   let existingEmail = 1;
@@ -155,11 +175,11 @@ app.post('/register', (req, res) => {
     };
     if (existingEmail === 0) {
       res.status(400);
-      res.send('Hey, this email is already registered in our database!')
+      res.send('Hey, this email is already registered in our database!');
     }
   } else {
   res.status(400);
-  res.send('None shall pass without entering all the mandatory information')
+  res.send('None shall pass without entering all the mandatory information');
   };
 });
 
