@@ -38,9 +38,12 @@ const users = {
 }
 
 const urlDatabase = {
-   "user5RandomID" : { "b2xVn2": "http://www.lighthouselabs.ca" },
-   "userRandomID" : { "9sm5xK" : "http://www.google.com" },
-   "user2RandomID" : {"t7UrE4" : "http://www.macg.co" }
+  "b2xVn2": { "url": "http://www.lighthouselabs.ca",
+  "userID": "user5RandomID" },
+  "9sm5xK": { "url": "http://www.google.com",
+  "userID": "userRandomID" },
+  "t7UrE4": { "url": "http://www.macg.co",
+  "userID": "user2RandomID" }
 };
 
 function generateRandomString() {
@@ -57,6 +60,10 @@ function generateRandomString() {
 //console.log(generateRandomString());
 
 const isLogged = (req) => req.cookies.user_id ;
+const isOwner = (req) => {
+  console.log(req.cookies.user_id, urlDatabase[req.params.id]['userID'] );
+  return (req.cookies.user_id === urlDatabase[req.params.id]['userID'])
+};
 
 
 app.get("/", (req, res) => {
@@ -125,13 +132,17 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) =>  {
+  if (isOwner(req)){
   delete urlDatabase[req.params.id];
   res.redirect('/urls');
+  };
 });
 
 app.post("/urls/:id", (req, res) => {
+  if(isOwner(req)){
   urlDatabase[req.params.id] = req.body[req.params.id];
   res.redirect('/urls');
+  };
 });
 app.post('/login', (req, res) => {
   let pass;
@@ -178,7 +189,7 @@ app.post('/register', (req, res) => {
       };
     res.redirect('/urls');
     };
-    if (notExistingEmail === 0) {
+    if (!notExistingEmail) {
       res.status(400);
       res.send('Hey, this email is already registered in our database!');
     }

@@ -10,7 +10,7 @@
     
     <ul>
     <% for (const each in urls){ %>
-      <form method="POST" action='/urls/<%= each %>/delete'></form>
+      <form method="POST" action='/urls/<%= each %>/delete'>
       <li>
         <%= each + ' : ' + urls[each] %>
         
