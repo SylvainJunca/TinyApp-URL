@@ -83,14 +83,12 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/hello", (req, res) => {
-  let templateVars = { greeting: 'Hello World!',
-  username: req.cookies["username"] };
+  let templateVars = { greeting: 'Hello World!' };
   res.render("hello_world", templateVars);
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase,
-    username: req.cookies["username"], 
+  let templateVars = { urls: urlDatabase, 
     user: users[req.cookies['user_id']]};
   res.render("urls_index", templateVars);
 });
@@ -107,7 +105,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 app.get("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('urls');
 });
 
@@ -153,17 +151,17 @@ app.post('/login', (req, res) => {
   
 });
 app.post('/register', (req, res) => {
-  let existingEmail = 1;
+  let notExistingEmail = 1;
   // Condition, if the user enters an email and a password, then we can get the data
   if (req.body.email && req.body.password) {
     //this condition checks if the email entered already exists 
     for (const each in users) {
       console.log(users[each]['email']);
       if (users[each]['email'] === req.body.email) {
-        existingEmail = 0;
+        notExistingEmail = 0;
       };
     };
-    if (existingEmail) {
+    if (notExistingEmail) {
       const usrName = generateRandomString();
       res.cookie('user_id', usrName);
       users[usrName] = {
@@ -173,7 +171,7 @@ app.post('/register', (req, res) => {
       };
     res.redirect('/urls');
     };
-    if (existingEmail === 0) {
+    if (notExistingEmail === 0) {
       res.status(400);
       res.send('Hey, this email is already registered in our database!');
     }
