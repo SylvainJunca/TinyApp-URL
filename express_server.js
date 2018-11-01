@@ -37,10 +37,10 @@ const users = {
   }
 }
 
-var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
-  "t7UrE4": "http://www.macg.co"
+const urlDatabase = {
+   "user5RandomID" : { "b2xVn2": "http://www.lighthouselabs.ca" },
+   "userRandomID" : { "9sm5xK" : "http://www.google.com" },
+   "user2RandomID" : {"t7UrE4" : "http://www.macg.co" }
 };
 
 function generateRandomString() {
@@ -163,7 +163,7 @@ app.post('/register', (req, res) => {
   if (req.body.email && req.body.password) {
     //this condition checks if the email entered already exists 
     for (const each in users) {
-      console.log(users[each]['email']);
+      //console.log(users[each]['email']);
       if (users[each]['email'] === req.body.email) {
         notExistingEmail = 0;
       };
