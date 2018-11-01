@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<body style="font-size:20px; padding:50px;">
+    <header>
+       <% include ./partials/_header %>
+    </header>
+    <% if(user){ %>
+      <h3>You already are logged in!</a></h3>
+    <% } else{ %>  
+      <form method='POST' action='/login'>
+          <input type = 'email' placeholder = 'email'>
+          <input type = 'password' placeholder = 'password'>
+          <input type = 'submit' value = 'Sign in'>
+        </form>
+   <% } %>
+</body>
+</html>
