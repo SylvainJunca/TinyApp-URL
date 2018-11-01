@@ -60,7 +60,7 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 app.get("/urls/new", (req, res) => {
-  let templateVars = { username: req.cookies["username"] }
+  let templateVars = { user: users[req.cookies['user_id']] }
   res.render("urls_new", templateVars);
 });
 app.get("/urls.json", (req, res) => {
@@ -73,13 +73,14 @@ app.get("/hello", (req, res) => {
 });
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase,
-    username: req.cookies["username"] };
+    username: req.cookies["username"], 
+    user: users[req.cookies['user_id']]};
   res.render("urls_index", templateVars);
 });
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id,
     urls: urlDatabase,
-    username: req.cookies["username"] };
+    user: users[req.cookies['user_id']] };
   res.render("urls_show", templateVars);
 });
 
@@ -88,8 +89,7 @@ app.get("/hello", (req, res) => {
   res.render("hello_world", templateVars);
 });
 app.get("/register", (req, res) => {
-  let templateVars = { username: req.cookies["username"] };
-  res.render("register", templateVars);
+  res.render("register");
 });
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
@@ -134,7 +134,7 @@ app.post('/register', (req, res) => {
     };
     if (existingEmail) {
       const usrName = generateRandomString();
-      res.cookie('username', usrName);
+      res.cookie('user_id', usrName);
       users[usrName] = {
         id: usrName,
         email: req.body.email,
