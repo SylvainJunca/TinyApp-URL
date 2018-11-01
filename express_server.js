@@ -56,6 +56,9 @@ function generateRandomString() {
 }
 //console.log(generateRandomString());
 
+const isLogged = (req) => req.cookies.user_id ;
+
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -74,8 +77,12 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+  if (!isLogged(req)) {
+    res.redirect('/login');
+  } else {  
   let templateVars = { user: users[req.cookies['user_id']] }
   res.render("urls_new", templateVars);
+  };
 });
 
 app.get("/urls.json", (req, res) => {
