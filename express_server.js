@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 //const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const password = "purple-monkey-dinosaur";
+//const password = "purple-monkey-dinosaur";
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -44,7 +44,7 @@ const users = {
     email: "user5@example.com", 
     password: "cat-watersalmon"
   }
-}
+};
 
 const urlDatabase = {
   "b2xVn2": { "url": "http://www.lighthouselabs.ca",
