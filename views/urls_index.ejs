@@ -12,7 +12,7 @@
       <% for (const each in urls){ %>
       <form method="POST" action='/urls/<%= each %>/delete'>
       <li>
-        <%= each + ' : ' + urls[each]['url'] %>
+        <a href = '/urls/<%= each %>'> <%= each %> </a> : <%= urls[each]['url'] %>
           <input type = "submit" value="Delete">
       </li>
     </form>

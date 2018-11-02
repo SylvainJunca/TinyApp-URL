@@ -1,7 +1,7 @@
 <header>
   <h2>The ugliest but coolest URL shortener <3 </h2>
     <% if(user){ %>
-      <h3>Welcome <%= user.id %> <a href='/logout'>Logout</a></h3>
+      <h5><a href= '/urls'>Your URLs</a> <a href='/urls/new'>New URL</a> Welcome <%= user.id %> <a href='/logout'>Logout</a></h5>
     <% } else { %> 
       <a href = '/login'>Login</a> 
       <a href = '/register'>Register</a>
