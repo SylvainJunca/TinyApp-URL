@@ -8,10 +8,10 @@
         <% include ./partials/_header %>
     </header>
     
-  
+      <p>Created <%= url['time'] %></p>
       <form method="POST" action='/urls/<%= shortURL %>'>
       <%= shortURL %>
-      <input name = '<%= shortURL %>' value = '<%= url %>' >
+      <input name = '<%= shortURL %>' value = '<%= url['url'] %>' >
       <input type = 'submit' value = 'Update'>
       </form>
   

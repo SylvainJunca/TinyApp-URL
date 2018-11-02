@@ -136,7 +136,7 @@ app.get('/urls/:id', (req, res) => {
   switch (statusFlag){
     case 1:
       let templateVars = { shortURL: req.params.id,
-        url: urlDatabase[req.params.id]['url'],
+        url: urlDatabase[req.params.id],
         user: users[req.session.user_id] };
       res.render("urls_show", templateVars);
       break;
