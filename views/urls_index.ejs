@@ -11,7 +11,7 @@
     <ul>
       <% for (const each in urls){ %>
       <li>
-        <a href = '/u/<%= each %>'>/u/<%= each %> </a> --> <%= urls[each]['url'] %>
+        <a href = '/u/<%= each %>'>/u/<%= each %> </a> --> <%= urls[each]['url'] %> Created <%= urls[each]['time'] %>
         <form method = 'GET' action = '/urls/<%= each %>'>
           <input type = 'submit' value= 'Edit'>
         </form>

@@ -150,6 +150,7 @@ app.get('/urls/:id', (req, res) => {
 
 app.get('/u/:id', (req, res) => {
   let longURL = urlDatabase[req.params.id]['url'];
+  urlDatabase[req.params.id]['used']++;
   res.redirect(longURL);
 });
 
@@ -158,11 +159,13 @@ app.post('/urls', (req, res) => {
     const shortURL = generateRandomString()
     urlDatabase[shortURL] = {
       'url': req.body['longURL'],
-      'user_ID': req.session.user_id
+      'user_ID': req.session.user_id,
+      'time': new Date().toLocaleDateString(),
+      'used': 0
     };
     res.redirect(`http://localhost:8080/urls/${shortURL}`);
   } else {
-    res.send('You should login in order to shorten the UR?L of your choice');
+    res.send('You should login in order to shorten the URL of your choice');
   }
 });
 
