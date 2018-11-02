@@ -11,7 +11,9 @@
     <ul>
       <% for (const each in urls){ %>
       <li>
-        <a href = '/u/<%= each %>'>/u/<%= each %> </a> --> <%= urls[each]['url'] %> Created <%= urls[each]['time'] %>
+        <a href = '/u/<%= each %>'>/u/<%= each %> </a> --> <%= urls[each]['url'] %>
+        * Created <%= urls[each]['time'] %>
+        * Until now this link has been used <%= urls[each]['used'] %> times.
         <form method = 'GET' action = '/urls/<%= each %>'>
           <input type = 'submit' value= 'Edit'>
         </form>

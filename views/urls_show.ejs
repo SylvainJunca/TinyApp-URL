@@ -9,6 +9,7 @@
     </header>
     
       <p>Created <%= url['time'] %></p>
+      <p>Until now this link has been used <%= url['used'] %> times.</p>
       <form method="POST" action='/urls/<%= shortURL %>'>
       <%= shortURL %>
       <input name = '<%= shortURL %>' value = '<%= url['url'] %>' >
