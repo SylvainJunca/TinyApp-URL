@@ -83,7 +83,6 @@ const urlsForUser = (id) => {
       userURL[each] = urlDatabase[each];
     };
   };
-  console.log(userURL);
   return userURL;
 }
 
@@ -258,7 +257,12 @@ app.post('/register', (req, res) => {
   };
 });
 
-app.get("/logout", (req, res) => {
+app.get('/logout', (req, res) => {
   delete req.session.user_id;
   res.redirect('urls');
 });
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
+
