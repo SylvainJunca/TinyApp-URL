@@ -45,13 +45,21 @@ const users = {
 
 const urlDatabase = {
   "b2xVn2": { "url": "http://www.lighthouselabs.ca",
-  "user_ID": "user5RandomID" },
+  "user_ID": "user5RandomID",
+  "time": "",
+  "used": "" },
   "9sm5xK": { "url": "http://www.google.com",
-  "user_ID": "userRandomID" },
+  "user_ID": "userRandomID",
+  "time": "",
+  "used": ""},
   "t7UrE4": { "url": "http://www.macg.co",
-  "user_ID": "user2RandomID" },
+  "user_ID": "user2RandomID",
+  "time": "",
+  "used": ""},
   "b2xfTu": { "url": "http://www.lifeisabeach.fr",
-  "user_ID": "user5RandomID" },
+  "user_ID": "user5RandomID",
+  "time": "",
+  "used": ""},
 };
 
 function generateRandomString() {
@@ -159,10 +167,16 @@ app.post('/urls', (req, res) => {
 });
 
 app.post('/urls/:id', (req, res) => {
-  if(isOwner(req)){
-    urlDatabase[req.params.id]['url'] = req.body[req.params.id];
-    res.redirect('/urls');
-  };
+  if (isLogged(req)){
+    if(isOwner(req)){
+      urlDatabase[req.params.id]['url'] = req.body[req.params.id];
+      res.redirect('/urls');
+    } else {
+      express.send('You do not have the permission to access to this page')
+    }
+  } else {
+    res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
+  }
 });
 
 app.post("/urls/:id/delete", (req, res) =>  {
