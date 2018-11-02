@@ -89,7 +89,7 @@ const urlsForUser = (id) => {
 }
 
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   if (isLogged(req)){
     res.redirect('urls');
   } else {
@@ -97,7 +97,7 @@ app.get("/", (req, res) => {
   }
 });
 
-app.get("/urls", (req, res) => {
+app.get('/urls', (req, res) => {
   
   if (isLogged(req)){
     let templateVars = { urls: urlsForUser(req.session.user_id), 
@@ -108,15 +108,16 @@ app.get("/urls", (req, res) => {
   };
 });
 
-app.get("/urls/new", (req, res) => {
+app.get('/urls/new', (req, res) => {
   if (isLogged(req)) {
-  let templateVars = { user: users[req.session.user_id] }
-  res.render('urls_new', templateVars);
-  } else 
-  res.redirect('/login');
+    let templateVars = { user: users[req.session.user_id] }
+    res.render('urls_new', templateVars);
+  } else {
+    res.redirect('/login');
+  }  
 });
 
-app.get("/urls/:id", (req, res) => {
+app.get('/urls/:id', (req, res) => {
   let statusFlag = 0;
   
   if (isLogged(req)) {
@@ -139,6 +140,32 @@ app.get("/urls/:id", (req, res) => {
       res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
   }
 });
+
+app.get('/u/:id', (req, res) => {
+  let longURL = urlDatabase[req.params.id]['url'];
+  res.redirect(longURL);
+});
+
+app.post('/urls', (req, res) => {
+  if (isLogged(req)){
+    const shortURL = generateRandomString()
+    urlDatabase[shortURL] = {
+      'url': req.body['longURL'],
+      'user_ID': req.session.user_id
+    };
+    res.redirect(`http://localhost:8080/urls/${shortURL}`);
+  } else {
+    res.send('You should login in order to shorten the UR?L of your choice');
+  }
+});
+
+app.post('/urls/:id', (req, res) => {
+  if(isOwner(req)){
+    urlDatabase[req.params.id]['url'] = req.body[req.params.id];
+    res.redirect('/urls');
+  };
+});
+
 
 
 app.get("/register", (req, res) => {
@@ -169,26 +196,13 @@ app.get("/hello", (req, res) => {
 
 
 
-app.get("/u/:shortURL", (req, res) => {
-  //console.log(urlDatabase[req.params.shortURL]['url']);
-  let longURL = urlDatabase[req.params.shortURL]['url'];
-  res.redirect(longURL);
-});
+
 app.get("/logout", (req, res) => {
   delete req.session.user_id;
   res.redirect('urls');
 });
 
-app.post("/urls", (req, res) => {
-  //console.log(req.body);  // debug statement to see POST parameters
-  const shortURL = generateRandomString()
-  urlDatabase[shortURL] = {
-    "url": req.body['longURL'],
-    "user_ID": req.session.user_id
-  };
-  //console.log(urlDatabase);
-  res.redirect(`http://localhost:8080/urls/${shortURL}`);
-});
+
 
 app.post("/urls/:id/delete", (req, res) =>  {
   if (isOwner(req)){
@@ -197,12 +211,7 @@ app.post("/urls/:id/delete", (req, res) =>  {
   };
 });
 
-app.post("/urls/:id", (req, res) => {
-  if(isOwner(req)){
-  urlDatabase[req.params.id]['url'] = req.body[req.params.id];
-  res.redirect('/urls');
-  };
-});
+
 
 //We check if the user enters the correct email and password to login
 //Depending on the value of the flag we will let the user login or not 
