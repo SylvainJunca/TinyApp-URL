@@ -166,44 +166,6 @@ app.post('/urls/:id', (req, res) => {
   };
 });
 
-
-
-app.get("/register", (req, res) => {
-  let templateVars = { user: users[req.session.user_id] }
-  res.render("register", templateVars);
-});
-
-app.get('/login', (req, res) => {
-  let templateVars = { user: users[req.session.user_id] }
-  res.render('login', templateVars);
-});
-
-app.get("/hello", (req, res) => {
-  let templateVars = { greeting: 'Hello World!' };
-  res.render("hello_world", templateVars);
-});
-
-
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  let templateVars = { greeting: 'Hello World!' };
-  res.render("hello_world", templateVars);
-});
-
-
-
-
-app.get("/logout", (req, res) => {
-  delete req.session.user_id;
-  res.redirect('urls');
-});
-
-
-
 app.post("/urls/:id/delete", (req, res) =>  {
   if (isOwner(req)){
   delete urlDatabase[req.params.id];
@@ -211,6 +173,21 @@ app.post("/urls/:id/delete", (req, res) =>  {
   };
 });
 
+app.get('/login', (req, res) => {
+  if (isLogged(req)) {
+    res.redirect('/urls')
+  }
+  let templateVars = { user: users[req.session.user_id] }
+  res.render('login', templateVars);
+});
+
+app.get("/register", (req, res) => {
+  if (isLogged(req)) {
+    res.redirect('/urls')
+  }
+  let templateVars = { user: users[req.session.user_id] }
+  res.render("register", templateVars);
+});
 
 
 //We check if the user enters the correct email and password to login
@@ -218,42 +195,45 @@ app.post("/urls/:id/delete", (req, res) =>  {
 //Flag 1 correct user name and password 
 //Flag 0 password incorrect
 //Flag 2 email incorrect
+
 app.post('/login', (req, res) => {
 
-//Creates the flag
-  let securityFlag = 2;
-  for(const each in users){
-    if (users[each]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[each]['password'])) {
-      //console.log(users[each]['email'], req.body.email, 'yes');
-      req.session.user_id = users[each]['id'];
-      securityFlag = 1;
-    } if (users[each]['email'] === req.body.email && !bcrypt.compareSync(req.body.password, users[each]['password'])) {
-      securityFlag = 0;
-    }; 
-  };
-
-//Check the flag
-switch(securityFlag) {
-  case 0: 
+  //Creates the flag
+    let securityFlag = 2;
+    for(const each in users){
+      if (users[each]['email'] === req.body.email) {
+        securityFlag = 0;
+      } if (users[each]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[each]['password'])) {
+        req.session.user_id = users[each]['id'];
+        securityFlag = 1;
+      } ; 
+    };
+  
+  //Checks the flag
+  switch(securityFlag) {
+    case 0: 
+      res.status(403);
+      res.send('None shall pass without the correct information!');
+      break;
+    case 1: 
+      res.redirect('/');
+      break;
+    default:  
     res.status(403);
-    res.send('None shall pass without the correct information!');
-    break;
-  case 1: 
-    res.redirect('/');
-    break;
-  default:  
-  res.status(403);
-  res.send('None shall pass without entering the correct email and password');
-}
+    res.send('None shall pass without entering the correct email and password');
+  }
 });
+
+//We check if the user enters the correct email and password to login
+//Depending on the value of the flag we will let the user login or not 
+//Flag 1 correct user name and password 
+//Flag 0 password incorrect
+//Flag 2 email incorrect
 
 app.post('/register', (req, res) => {
   let notExistingEmail = 1;
-  // Condition, if the user enters an email and a password, then we can get the data
   if (req.body.email && req.body.password) {
-    //this condition checks if the email entered already exists 
     for (const each in users) {
-      //console.log(users[each]['email']);
       if (users[each]['email'] === req.body.email) {
         notExistingEmail = 0;
       };
@@ -262,7 +242,6 @@ app.post('/register', (req, res) => {
       const usrName = generateRandomString();
       req.session.user_id = usrName;
       const hashedPassword = bcrypt.hashSync(req.body.password, 10); // Hash the password entered
-      console.log('hashed pwd on register', hashedPassword);
       users[usrName] = {
         id: usrName,
         email: req.body.email,
@@ -278,6 +257,28 @@ app.post('/register', (req, res) => {
   res.send('None shall pass without entering all the mandatory information');
   };
 });
+
+app.get("/logout", (req, res) => {
+  delete req.session.user_id;
+  res.redirect('urls');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
