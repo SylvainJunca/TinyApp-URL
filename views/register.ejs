@@ -3,9 +3,9 @@
 <head>
   <title>TinyApp</title>
 </head>
-<body style="font-size:20px; padding:50px;">
+<body>
     <header>
-       Please register
+      <% include ./partials/_header %>
     </header>
   <form action = '/register' method = 'POST'>
     <input name = 'email' type = 'email' placeholder = 'email'>

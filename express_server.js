@@ -2,18 +2,15 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-//const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-//const password = "purple-monkey-dinosaur";
-
 
 app.use(bodyParser.urlencoded({extended: true}));
 //app.use(cookieParser())
 app.use(cookieSession({
   name: 'session',
-  keys: ['Popipoulo'],
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  keys: ['purple-monkey-dinosaur'],
+  maxAge: 15 * 60 * 1000 // 15 minutes
 }))
 
 app.set("view engine", "ejs");
@@ -70,11 +67,16 @@ function generateRandomString() {
 }
 //console.log(generateRandomString());
 
+
+//Created those functions to be able to call them at different points of my code
+//and make it easier to update them if we need.
 const isLogged = (req) => req.session.user_id ;
 const isOwner = (req) => {
  // console.log(req.session.user_id, urlDatabase[req.params.id]['user_ID'] );
   return (req.session.user_id === urlDatabase[req.params.id]['user_ID'])
 };
+
+//This function allows to gather all the urls owned by one specific user
 const urlsForUser = (id) => {
   const userURL = {}
   for (each in urlDatabase) {
@@ -86,11 +88,14 @@ const urlsForUser = (id) => {
   return userURL;
 }
 
+
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  let templateVars = { user: users[req.session.user_id] }
+  res.render("home", templateVars);
 });
 app.get("/register", (req, res) => {
-  res.render("register");
+  let templateVars = { user: users[req.session.user_id] }
+  res.render("register", templateVars);
 });
 
 app.get('/login', (req, res) => {
@@ -127,13 +132,13 @@ app.get("/urls", (req, res) => {
       user: users[req.session.user_id]};
     res.render("urls_index", templateVars);
   } else {
-  res.send('You should login or register');
+  res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
   };
 });
 
 app.get("/urls/:id", (req, res) => {
   if (!isLogged(req)) {
-    res.send('Please login or register');
+    res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
   } if (isOwner(req)) {
   let templateVars = { shortURL: req.params.id,
     url: urlDatabase[req.params.id]['url'],
@@ -179,28 +184,33 @@ app.post("/urls/:id", (req, res) => {
   };
 });
 app.post('/login', (req, res) => {
-  let pass;
-  let failPassword;
+  let securityFlag = 0;
 
+  //We check if the user enters the correct email and password to login
+  //Depending on 
   for(const each in users){
     if (users[each]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[each]['password'])) {
       //console.log(users[each]['email'], req.body.email, 'yes');
       req.session.user_id = users[each]['id'];
-      pass = 1;
-    } if (users[each]['email'] === req.body.email && !bcrypt.compareSync("purple-monkey-dinosaur", req.body.password)) {
-      failPassword = 1;
+      securityFlag = 1;
+    } if (users[each]['email'] === req.body.email && !bcrypt.compareSync(req.body.password, users[each]['password'])) {
+      securityFlag = 0;
     }; 
   };
-  if(pass === 1) {
+
+//
+switch(securityFlag) {
+  case 0: 
+    res.status(403);
+    res.send('None shall pass without the correct information!');
+    break;
+  case 1: 
     res.redirect('/');
-  };
-  if (failPassword === 1) {
-    res.status(403);
-    res.send('None shall pass without entering the correct password!')
-  } if(pass !== 1) {
-    res.status(403);
-    res.send('None shall pass without entering the correct email and password')
-  }
+    break;
+  default:  
+  res.status(403);
+  res.send('None shall pass without entering the correct email and password');
+}
 });
 app.post('/register', (req, res) => {
   let notExistingEmail = 1;
