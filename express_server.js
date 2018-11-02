@@ -65,14 +65,13 @@ function generateRandomString() {
   }
   return short;
 }
-//console.log(generateRandomString());
 
 
 //Created those functions to be able to call them at different points of my code
 //and make it easier to update them if we need.
+
 const isLogged = (req) => req.session.user_id ;
 const isOwner = (req) => {
- // console.log(req.session.user_id, urlDatabase[req.params.id]['user_ID'] );
   return (req.session.user_id === urlDatabase[req.params.id]['user_ID'])
 };
 
@@ -88,6 +87,7 @@ const urlsForUser = (id) => {
   return userURL;
 }
 
+// Tut tut - Here start the beautiful routes of our server
 
 app.get('/', (req, res) => {
   if (isLogged(req)){
@@ -262,25 +262,3 @@ app.get("/logout", (req, res) => {
   delete req.session.user_id;
   res.redirect('urls');
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
-
