@@ -90,9 +90,57 @@ const urlsForUser = (id) => {
 
 
 app.get("/", (req, res) => {
-  let templateVars = { user: users[req.session.user_id] }
-  res.render("home", templateVars);
+  if (isLogged(req)){
+    res.redirect('urls');
+  } else {
+    res.redirect('login');
+  }
 });
+
+app.get("/urls", (req, res) => {
+  
+  if (isLogged(req)){
+    let templateVars = { urls: urlsForUser(req.session.user_id), 
+      user: users[req.session.user_id]};
+    res.render('urls_index', templateVars);
+  } else {
+  res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
+  };
+});
+
+app.get("/urls/new", (req, res) => {
+  if (isLogged(req)) {
+  let templateVars = { user: users[req.session.user_id] }
+  res.render('urls_new', templateVars);
+  } else 
+  res.redirect('/login');
+});
+
+app.get("/urls/:id", (req, res) => {
+  let statusFlag = 0;
+  
+  if (isLogged(req)) {
+    statusFlag = 2;
+  } if(isLogged(req) && isOwner(req)){
+    statusFlag = 1;
+  }
+
+  switch (statusFlag){
+    case 1:
+      let templateVars = { shortURL: req.params.id,
+        url: urlDatabase[req.params.id]['url'],
+        user: users[req.session.user_id] };
+      res.render("urls_show", templateVars);
+      break;
+    case 2:
+      res.send('You cannot have access to this page');
+      break;
+    default:
+      res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
+  }
+});
+
+
 app.get("/register", (req, res) => {
   let templateVars = { user: users[req.session.user_id] }
   res.render("register", templateVars);
@@ -108,13 +156,7 @@ app.get("/hello", (req, res) => {
   res.render("hello_world", templateVars);
 });
 
-app.get("/urls/new", (req, res) => {
-  if (isLogged(req)) {
-  let templateVars = { user: users[req.session.user_id] }
-  res.render("urls_new", templateVars);
-  } else 
-  res.redirect('/login');
-});
+
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
@@ -125,29 +167,7 @@ app.get("/hello", (req, res) => {
   res.render("hello_world", templateVars);
 });
 
-app.get("/urls", (req, res) => {
-  
-  if (isLogged(req)){
-    let templateVars = { urls: urlsForUser(req.session.user_id), 
-      user: users[req.session.user_id]};
-    res.render("urls_index", templateVars);
-  } else {
-  res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
-  };
-});
 
-app.get("/urls/:id", (req, res) => {
-  if (!isLogged(req)) {
-    res.send(`You should <a href='/login'>login</a> or <a href='/register'>register</a>`);
-  } if (isOwner(req)) {
-  let templateVars = { shortURL: req.params.id,
-    url: urlDatabase[req.params.id]['url'],
-    user: users[req.session.user_id] };
-  res.render("urls_show", templateVars);
-  } else {
-    res.send('You cannot have access to this page');
-  }
-});
 
 app.get("/u/:shortURL", (req, res) => {
   //console.log(urlDatabase[req.params.shortURL]['url']);
@@ -183,11 +203,16 @@ app.post("/urls/:id", (req, res) => {
   res.redirect('/urls');
   };
 });
-app.post('/login', (req, res) => {
-  let securityFlag = 0;
 
-  //We check if the user enters the correct email and password to login
-  //Depending on 
+//We check if the user enters the correct email and password to login
+//Depending on the value of the flag we will let the user login or not 
+//Flag 1 correct user name and password 
+//Flag 0 password incorrect
+//Flag 2 email incorrect
+app.post('/login', (req, res) => {
+
+//Creates the flag
+  let securityFlag = 2;
   for(const each in users){
     if (users[each]['email'] === req.body.email && bcrypt.compareSync(req.body.password, users[each]['password'])) {
       //console.log(users[each]['email'], req.body.email, 'yes');
@@ -198,7 +223,7 @@ app.post('/login', (req, res) => {
     }; 
   };
 
-//
+//Check the flag
 switch(securityFlag) {
   case 0: 
     res.status(403);
@@ -212,6 +237,7 @@ switch(securityFlag) {
   res.send('None shall pass without entering the correct email and password');
 }
 });
+
 app.post('/register', (req, res) => {
   let notExistingEmail = 1;
   // Condition, if the user enters an email and a password, then we can get the data

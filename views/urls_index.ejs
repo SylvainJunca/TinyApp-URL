@@ -10,12 +10,15 @@
     
     <ul>
       <% for (const each in urls){ %>
-      <form method="POST" action='/urls/<%= each %>/delete'>
       <li>
-        <a href = '/urls/<%= each %>'> <%= each %> </a> : <%= urls[each]['url'] %>
-          <input type = "submit" value="Delete">
+        <a href = '/u/<%= each %>'>/u/<%= each %> </a> --> <%= urls[each]['url'] %>
+        <form method = 'GET' action = '/urls/<%= each %>'>
+          <input type = 'submit' value= 'Edit'>
+        </form>
+        <form method = "POST" action = '/urls/<%= each %>/delete'>
+          <input type = 'submit' value = 'Delete'>
+        </form>
       </li>
-    </form>
     <% }; %> 
   </ul>
   
