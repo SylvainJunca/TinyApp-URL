@@ -30,3 +30,6 @@ TinyApp is a fullstack web application buiolt woth Node and Express that allows 
 - Each URL can be modified and deleted if needed, only by you.
 - Each short URL stored shows you the number of times it has been used.
 - Each short ULR page shows when you created them.
+- The app stores only hashed version of user's password
+- The app uses hashed cookies for more security and needs the user to login  again after 15 minutes
+- This apps is ugly (not because of lack of time...) 
