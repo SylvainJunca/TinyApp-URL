@@ -4,8 +4,9 @@ TinyApp is a fullstack web application buiolt woth Node and Express that allows 
 
 ## Final Product
 
+!["Screenshot of shorten page"](https://github.com/SylvainJunca/express-web-server/blob/master/docs/TinyURL-shorten-page.png?raw=true)
 !["Screenshot of URLs page"](https://github.com/SylvainJunca/express-web-server/blob/master/docs/TinyURL-urls-page.png?raw=true)
-
+!["Screenshot of registration page"](https://github.com/SylvainJunca/express-web-server/blob/master/docs/TinyURL-registration-page.png?raw=true)
 
 ##Dependencies
 
